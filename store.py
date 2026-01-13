@@ -1,36 +1,73 @@
+import products
 
 
+class Store:
+    def __init__(self, products): # 'products' ist das Argument, das übergeben wird
+        # Hier wird die Instanzvariable definiert:
+        self.products = products
 
-def add_product(self, product):
-    pass
-#bose = products.Product("Bose QuietComfort Earbuds", price=250, quantity=500)
-#mac = products.Product("MacBook Air M2", price=1450, quantity=100)
+    def add_product(self, product):
+        """Fügt ein Produkt zum Store hinzu."""
+        self.products.append(product)
 
-# instance of a store
-#best_buy = Store([bose, mac])
+    def remove_product(self, product):
+        """Entfernt ein Produkt aus dem Store."""
+        if product in self.products:
+            self.products.remove(product)
 
-#pixel = products.Product("Google Pixel 7", price=500, quantity=250)
-#best_buy.add_product(pixel)
+    def get_total_quantity(self) -> int:
+        total = 0
+        # Hier greifst du auf self.products zu:
+        for prod in self.products:
+            total += prod.get_quantity()
+        return total
+
+    def get_all_products(self):
+        """Gibt eine Liste aller aktiven Produkte zurück."""
+        return [prod for prod in self.products if prod.is_active()]
+
+    def order(self, shopping_list) -> float:
+        """
+        Verarbeitet eine Bestellung (Liste von Tupeln: (Produkt, Menge)).
+        Gibt den Gesamtpreis zurück.
+        """
+        total_price = 0.0
+        for product, quantity in shopping_list:
+            # Wir nutzen die buy-Methode der Product-Klasse
+            # Diese kümmert sich bereits um Bestandsprüfung und Preiskalkulation
+            try:
+                total_price += product.buy(quantity)
+            except ValueError as e:
+                print(f"Fehler bei Bestellung von {product.name}: {e}")
+                raise e  # Wir werfen den Fehler weiter, damit der User weiß, dass die Order scheiterte
+
+        return total_price
 
 
-def remove_product(self, product):
-    pass
-Entfernt ein Produkt aus dem Store.
-def get_total_quantity(self) -> int:
-    pass
-#Gibt zurück, wie viele Artikel insgesamt im Store vorhanden sind.
-def get_all_products(self) -> List[Product]:
-    pass
-#Gibt alle Produkte im Store zurück, die aktiv sind.
-def order(self, shopping_list) -> float:
-    pass
-#Erhält eine Liste von Tupeln, wobei jedes Tupel zwei Elemente enthält:
-#Produkt (Produktklasse) und Menge (int).
-#Kauft die Produkte und gibt den Gesamtpreis der Bestellung zurück.
+def main():
+    # Setup der Produkte
+    product_list = [
+        products.Product("MacBook Air M2", price=1450, quantity=100),
+        products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+        products.Product("Google Pixel 7", price=500, quantity=250),
+    ]
 
-def get_total_quantity(self) -> int:
-    pass
+    # Store Instanz erstellen
+    best_buy = Store(product_list)
+
+    # Aktive Produkte holen
+    store_products = best_buy.get_all_products()
+
+    # Tests aus der Aufgabenstellung
+    print(f"Gesamtmenge im Lager: {best_buy.get_total_quantity()}")
+
+    try:
+        # Bestellt 1x MacBook und 2x Bose Earbuds
+        order_cost = best_buy.order([(store_products[0], 1), (store_products[1], 2)])
+        print(f"Bestellkosten: {order_cost} Euro.")
+    except Exception as e:
+        print(f"Bestellung konnte nicht abgeschlossen werden: {e}")
 
 
-def get_total_quantity(self) -> int:
-    pass
+if __name__ == "__main__":
+    main()
